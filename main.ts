@@ -2,14 +2,22 @@ namespace SpriteKind {
     export const Grocery = SpriteKind.create()
     export const CartItem = SpriteKind.create()
 }
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Grocery, function(sprite: Sprite, otherSprite: Sprite) {
+    if (controller.A.isPressed()){
+        addToCart(otherSprite)
+        pause(100)
+    }
+})
 function createAllProduct () {
     for (let i = 0; i <= groceryImages.length - 1; i++) {
-        image2 = groceryImages[i]
-        cost = groceryCosts[i]
-        weight = groceryWeights[i]
-        name = groceryNames[i]
-        createProduct(image2, cost, weight, name)
+        createProduct(groceryImages[i], groceryCosts[i], groceryWeights[i], groceryNames[i])
     }
+}
+function addToCart (grocery: Sprite) {
+	let item = sprites.create(grocery.image, SpriteKind.CartItem)
+    item.follow(player)
+    item.x = player.x
+    item.y = player.y
 }
 function createProduct (img2: Image, cost: number, weight: number, name: string) {
     p = sprites.create(img2, SpriteKind.Grocery)
@@ -19,15 +27,33 @@ function createProduct (img2: Image, cost: number, weight: number, name: string)
     tiles.placeOnRandomTile(p, assets.tile`tile1`)
 }
 let p: Sprite = null
-let name = ""
-let weight = 0
-let cost = 0
-let image2: Image = null
 let groceryCosts: number[] = []
 let groceryWeights: number[] = []
 let groceryNames: string[] = []
 let groceryImages: Image[] = []
+let image2 = null
+let cost = 0
+let weight = 0
+let name = ""
 groceryImages = [
+img`
+    . . . 2 2 2 . . . . . . . . . . 
+    . . . c c c 6 6 8 8 . . . . . . 
+    . . 6 e e e e e e 6 8 . . . . . 
+    . 6 e e e e e e 8 e 6 8 . . . . 
+    6 e e e e e e 8 . 8 e 8 . . . . 
+    6 e e e e e e 8 . 8 e 8 . . . . 
+    8 e e e e e e 8 . 8 e 8 . . . . 
+    8 e e e e e e 8 8 e e 8 . . . . 
+    8 c e e e e e e e e e 8 . . . . 
+    8 6 c e e e e e e e c 8 . . . . 
+    . 8 6 c e e e e e c 6 8 . . . . 
+    . . 8 8 8 8 8 8 8 8 8 . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    `,
 img`
     . . . 2 2 2 . . . . . . . . . . 
     . . . c c c 6 6 8 8 . . . . . . 
@@ -192,6 +218,7 @@ img`
     `
 ]
 groceryNames = [
+"Chocolate Milk",
 "Milk",
 "Grape Soda",
 "Oatmeal",
@@ -204,6 +231,7 @@ groceryNames = [
 ]
 groceryWeights = [
 8,
+8,
 2,
 1,
 12,
@@ -214,6 +242,7 @@ groceryWeights = [
 10
 ]
 groceryCosts = [
+3,
 2,
 3,
 4,
